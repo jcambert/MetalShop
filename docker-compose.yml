@@ -1,0 +1,60 @@
+#@Ambertjc le 01/11/2017
+version: '2' 
+services:
+  app:
+    image: prestashop/prestashop:1.6
+    ports:
+      - 8081:80
+    volumes:
+      - ./web:/var/www/html
+      - ./web/modules:/var/www/html/modules
+      - ./web/override:/var/www/html/override
+      - ./web/themes:/var/www/html/themes
+
+    links:
+      - mysql:mysql
+    depends_on:
+      - prestapi
+    network_mode: bridge
+    environment:
+      - DB_USER=prestashop
+      - DB_PASSWD=prestashop
+      - DB_PREFIX=awesome
+      - DB_NAME=prestashop
+      - PS_INSTALL_AUTO=0
+      - DB_SERVER=mysql
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - 3307:3306 
+    environment:
+      - MYSQL_ROOT_PASSWORD=korben90
+      - MYSQL_DATABASE=prestashop
+      - MYSQL_USER=prestashop
+      - MYSQL_PASSWORD=prestashop
+    network_mode: bridge
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mysql:mysql
+    ports: 
+      - 81:80 
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=korben90
+    network_mode: bridge
+  
+  prestapi:
+    image: artificial/docker-sails
+    network_mode: bridge
+    user: "${UID}:${GID}"
+    command: sails lift
+    volumes:
+      - ./prestapi:/server
+    
+    ports:
+      - 1338:1337

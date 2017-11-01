@@ -1,4 +1,15 @@
 ########################
+# mysql
+########################
+data/
+
+########################
+# prestashop
+########################
+web/
+!web/**/metalshop/
+
+########################
 # sails
 ########################
 .sails
@@ -55,6 +66,9 @@ coverage
 
 # Bower dependency directory (https://bower.io/)
 bower_components
+.bower-cache
+.bower-registry
+.bower-tmp
 
 # node-waf configuration
 .lock-wscript
